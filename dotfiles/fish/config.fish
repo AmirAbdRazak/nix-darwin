@@ -8,6 +8,11 @@ if test (uname -s) = "Darwin"
   set -gx PATH /usr/local/opt/gnu-sed/libexec/gnubin $PATH
 end
 
+function nix-gc
+    nix-collect-garbage -d 
+    nix-store --gc --print-dead
+end
+
 function fish-source
     source $HOME/.config/fish/config.fish
 end

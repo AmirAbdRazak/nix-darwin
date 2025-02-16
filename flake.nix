@@ -66,16 +66,7 @@
 
       nix = {
         settings.experimental-features = "nix-command flakes";
-        enable = false; # keep this as false, since it clashes with determinate, all nix functionality will still be the same
-        gc = {
-          automatic = true;
-          dates = [ "weekly" ];
-          options = "--delete-older than 30d --max-size 20G";
-        };
-        optimise = {
-          automatic = true;
-          dates = [ "weekly" ];
-        };
+        enable = false;
       };
 
       programs.fish.enable = true;
