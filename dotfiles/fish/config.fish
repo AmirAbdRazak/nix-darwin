@@ -9,8 +9,8 @@ if test (uname -s) = "Darwin"
 end
 
 function nix-gc
-    nix-collect-garbage -d 
     nix-store --gc --print-dead
+    nix-collect-garbage -d 
 end
 
 function fish-source
