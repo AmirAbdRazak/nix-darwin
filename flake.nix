@@ -19,7 +19,7 @@
       environment.systemPackages = with pkgs; [ 
           git
           babelfish
-	  tmux
+          tmux
 	  neovim
           vim
           neofetch

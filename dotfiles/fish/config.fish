@@ -43,8 +43,9 @@ set -g PATH /usr/local/bin $PATH
 bind -k "up" history-search-backward
 bind -k "down" history-search-forward
 
-alias hm "nix run home-manager"
 alias n "nvim"
 
+set -gx TERM xterm-256color
+starship init fish | source
 fzf --fish | source
 zoxide init fish | source
