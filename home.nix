@@ -11,6 +11,7 @@
       ".config/wezterm".source = ./dotfiles/wezterm;
       ".config/starship.toml".source = ./dotfiles/starship/starship.toml;
       ".config/nvim".source = ./dotfiles/nvim;
+      ".config/tmux/tmux.conf".source = ./dotfiles/tmux/tmux.conf;
     }; 
     sessionVariables = {}; 
     sessionPath = [ "/run/current-system/sw/bin" "$HOME/.nix-profile/bin" ]; 
