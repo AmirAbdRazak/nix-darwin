@@ -69,6 +69,10 @@
         enable = false;
       };
 
+      services.aerospace = {
+          enable = true;
+          settings = import ./dotfiles/aerospace/aerospace.nix;
+      };
       programs.fish.enable = true;
       system.configurationRevision = self.rev or self.dirtyRev or null;
       system.stateVersion = 6;

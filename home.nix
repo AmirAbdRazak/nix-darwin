@@ -10,6 +10,7 @@
       ".config/fish/config.fish".source = ./dotfiles/fish/config.fish;
       ".config/wezterm".source = ./dotfiles/wezterm;
       ".config/starship.toml".source = ./dotfiles/starship/starship.toml;
+      ".config/nvim".source = ./dotfiles/nvim;
     }; 
     sessionVariables = {}; 
     sessionPath = [ "/run/current-system/sw/bin" "$HOME/.nix-profile/bin" ]; 
