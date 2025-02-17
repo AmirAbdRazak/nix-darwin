@@ -17,6 +17,8 @@
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [ 
+          cargo
+          lazygit
           git
           babelfish
           tmux

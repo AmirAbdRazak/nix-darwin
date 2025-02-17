@@ -45,7 +45,7 @@ require('lazy').setup({
       "nvim-lua/plenary.nvim",
     },
     keys = {
-      { "<leader>lf", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
     }
   },
   'matze/vim-move',
