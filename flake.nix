@@ -17,6 +17,8 @@
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [ 
+          direnv
+          yt-dlp
           cargo
           lazygit
           git
