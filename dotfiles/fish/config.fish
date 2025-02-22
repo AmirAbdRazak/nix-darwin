@@ -53,4 +53,5 @@ alias n "nvim"
 set -gx TERM xterm-256color
 starship init fish | source
 fzf --fish | source
+direnv hook fish | source
 zoxide init fish | source
