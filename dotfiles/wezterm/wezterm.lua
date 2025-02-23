@@ -13,7 +13,7 @@ config.colors = {
 	cursor_bg = "white",
 	cursor_border = "white"
 }
-config.color_scheme = 'Catpuccin Latte'
+config.color_scheme = 'Catppuccin Mocha'
 
 -- Appearance
 config.window_decorations = "RESIZE"
@@ -24,14 +24,8 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
-config.background = {
-	{
-		source = {
-			File = wezterm.home_dir .. "/.config/wezterm/assets/amiya-wallpaper-bg.jpeg",
-		},
-		hsb = { brightness = 0.025 },
-	},
-}
+config.window_background_opacity = 0.6
+config.macos_window_background_blur = 20
 
 -- Miscellaneous settings
 config.max_fps = 165
