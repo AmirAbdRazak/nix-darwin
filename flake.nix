@@ -34,7 +34,9 @@
 	  bat
           ripgrep
           mkalias
+          skimpdf
       ];
+
 
       fonts.packages = [
         pkgs.nerd-fonts.jetbrains-mono
@@ -59,14 +61,14 @@
           done
         '';
 
-      homebrew = {
-          enable = true;
-          taps = [];
-          brews = [];
-          casks = [
-            "wezterm"
-          ];
-      };
+      # homebrew = {
+      #     enable = true;
+      #     taps = [];
+      #     brews = [];
+      #     casks = [
+      #       "wezterm"
+      #     ];
+      # };
 
       nix = {
         settings.experimental-features = "nix-command flakes";

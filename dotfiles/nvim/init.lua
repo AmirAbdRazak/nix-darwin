@@ -461,7 +461,9 @@ require('telescope').setup {
   },
 }
 
-require('lspconfig').gleam.setup({})
+local lspconfig = require('lspconfig')
+lspconfig.gleam.setup({})
+
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
@@ -621,10 +623,10 @@ end
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
   -- pyright = {},
-  -- rust_analyzer = {},
+  rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
@@ -645,6 +647,7 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 require("cmp").config.formatting = {
   format = require("tailwindcss-colorizer-cmp").formatter
 }
+
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
