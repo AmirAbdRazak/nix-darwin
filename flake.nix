@@ -17,6 +17,23 @@
     configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [ 
+          openvpn
+          ocaml
+          opam
+          ocamlPackages.ocaml
+          ocamlPackages.dune_3
+          ocamlPackages.findlib
+          ocamlPackages.utop
+          ocamlPackages.odoc
+          autoconf
+          nodejs
+          qbittorrent
+          xz
+          wimlib
+          tree
+
+          gnumake
+          gnupatch
           direnv
           yt-dlp
           cargo
@@ -35,6 +52,7 @@
           ripgrep
           mkalias
           skimpdf
+          iproute2mac
       ];
 
 
@@ -61,14 +79,6 @@
           done
         '';
 
-      # homebrew = {
-      #     enable = true;
-      #     taps = [];
-      #     brews = [];
-      #     casks = [
-      #       "wezterm"
-      #     ];
-      # };
 
       nix = {
         settings.experimental-features = "nix-command flakes";

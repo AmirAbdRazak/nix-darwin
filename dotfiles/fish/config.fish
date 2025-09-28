@@ -49,9 +49,12 @@ bind -k "up" history-search-backward
 bind -k "down" history-search-forward
 
 alias n "nvim"
+alias vim "nvim"
 
+alias ll "ls -Filah"
 set -gx TERM xterm-256color
 starship init fish | source
 fzf --fish | source
 direnv hook fish | source
 zoxide init fish | source
+eval (opam env)

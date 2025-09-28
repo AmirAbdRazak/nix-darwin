@@ -29,7 +29,7 @@
     "ctrl-shift-alt-h" = "join-with left";
     "ctrl-shift-alt-v" = "join-with down";
 
-    "ctrl-shift-alt-f" = "fullscreen";
+    "ctrl-shift-alt-f" = "fullscreen --no-outer-gaps";
     "ctrl-shift-alt-m" = "macos-native-minimize";
     "ctrl-shift-alt-q" = "close";
 

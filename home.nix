@@ -10,7 +10,8 @@
       ".config/fish/config.fish".source = ./dotfiles/fish/config.fish;
       ".config/wezterm".source = ./dotfiles/wezterm;
       ".config/starship.toml".source = ./dotfiles/starship/starship.toml;
-      ".config/nvim".source = ./dotfiles/nvim;
+      ".config/nvim/init.lua".source = ./dotfiles/nvim/init.lua;
+      ".config/nvim/lua".source = ./dotfiles/nvim/lua;
       ".config/tmux/tmux.conf".source = ./dotfiles/tmux/tmux.conf;
     }; 
     sessionVariables = {}; 

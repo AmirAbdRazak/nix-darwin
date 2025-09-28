@@ -18,6 +18,11 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
   'tpope/vim-surround',
+  'tpope/vim-repeat',
+  {
+    "stevearc/conform.nvim",
+    opts = {},
+  },
   {
     'stevearc/oil.nvim',
     ---@module 'oil'
@@ -52,7 +57,6 @@ require('lazy').setup({
   'BurntSushi/ripgrep',
   'windwp/nvim-autopairs',
   'airblade/vim-gitgutter',
-  'Olical/conjure',
   'tpope/vim-sleuth',
   {
     "epwalsh/obsidian.nvim",
@@ -98,10 +102,10 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
+      { 'williamboman/mason.nvim',           version = "v1.11.0", config = true },
+      { 'williamboman/mason-lspconfig.nvim', version = "v1.32.0" },
 
-      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',                 tag = 'legacy',      opts = {} },
 
       'folke/neodev.nvim',
     },
@@ -232,7 +236,6 @@ require('lazy').setup({
     config = function()
       require('catppuccin').setup {
         flavour = "latte",
-        transparent_background = true
       }
     end
   },
@@ -245,7 +248,6 @@ require('lazy').setup({
         styles = {
           bold = true,
           italic = true,
-          transparency = true,
         },
         palette = {
           moon = {
@@ -461,8 +463,6 @@ require('telescope').setup {
   },
 }
 
-local lspconfig = require('lspconfig')
-lspconfig.gleam.setup({})
 
 
 -- Enable telescope fzf native, if installed
@@ -493,13 +493,16 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]resume' })
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = '[F]ormat current buffer' })
+vim.keymap.set({ "n", "v" }, "<leader>f", function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format buffer" })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'dockerfile', 'html', 'go', 'lua', 'markdown', 'python', 'rust', 'tsx', 'javascript',
+    'ocaml', 'ocaml_interface',
     'typescript', 'svelte', 'yaml', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
@@ -666,6 +669,39 @@ mason_lspconfig.setup_handlers {
     }
   end
 }
+local lspconfig = require('lspconfig')
+lspconfig.gleam.setup({})
+lspconfig.ocamllsp.setup {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    codelens = {
+      enable = true,
+    }
+  },
+  cmd = { "opam", "exec", "--", "ocamllsp" }
+}
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    require("conform").format({ bufnr = args.buf, async = true, lsp_fallback = true })
+  end,
+  desc = "Format buffer on save",
+})
+
+local conform = require("conform")
+
+conform.setup({
+  formatters_by_ft = {
+    ocaml = { "ocamlformat" },
+    ["ocaml.interface"] = { "ocamlformat" },
+    -- Add other formatters here if you like
+    lua = { "stylua" },
+    rust = { "rustfmt" },
+  },
+})
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
