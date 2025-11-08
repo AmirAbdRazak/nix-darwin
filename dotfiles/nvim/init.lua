@@ -1,6 +1,14 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+local old_notify = vim.notify
+vim.notify = function(msg, level, opts)
+  if type(msg) == "string" and msg:match("require%('lspconfig'%).*deprecated") then
+    return
+  end
+  old_notify(msg, level, opts)
+end
+
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -33,6 +41,28 @@ require('lazy').setup({
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
+  },
+  {
+    -- Use the official Merlin repository name
+    'ocaml/merlin',
+    lazy = false,
+    config = function()
+      -- Get the opam share directory path by running the shell command
+      local opamshare = vim.fn.system('opam var share'):gsub('\n$', '')
+
+      -- Check if the path is valid and register the merlin/vim directory
+      if opamshare and vim.loop.fs_stat(opamshare) then
+        local merlin_rtp = opamshare .. "/merlin/vim"
+        vim.opt.runtimepath:prepend(merlin_rtp)
+
+        -- Recommended: Run helptags to index the documentation
+        vim.cmd("execute 'helptags ' . '" .. merlin_rtp .. "/doc'")
+
+        -- Ensure correct filetype is set for OCaml files
+        vim.cmd([[autocmd BufEnter *.ml,*.mli,*.mll,*.mly set filetype=ocaml]])
+      end
+    end,
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
   'nvim-neotest/nvim-nio',
   { "ellisonleao/gruvbox.nvim", priority = 1000, config = true, opts = ... },
@@ -102,10 +132,10 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      { 'williamboman/mason.nvim',           version = "v1.11.0", config = true },
-      { 'williamboman/mason-lspconfig.nvim', version = "v1.32.0" },
+      { 'williamboman/mason.nvim',           config = true },
+      { 'williamboman/mason-lspconfig.nvim', },
 
-      { 'j-hui/fidget.nvim',                 tag = 'legacy',      opts = {} },
+      { 'j-hui/fidget.nvim',                 opts = {},    config = true },
 
       'folke/neodev.nvim',
     },
@@ -176,9 +206,6 @@ require('lazy').setup({
           }
         }
       })
-      require('rust-tools').hover_actions.hover_actions()
-      require('rust-tools').inlay_hints.set()
-      require('rust-tools').inlay_hints.enable()
     end
   },
   {
@@ -607,13 +634,17 @@ local on_attach = function(_, bufnr)
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   nmap('<leader>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    -- Use the modern method for listing workspace folders from the client object
+    local client = vim.lsp.get_client_by_buf(bufnr)
+    if client and client.config.flags and client.config.flags.allow_workspace_folders then
+      print(vim.inspect(client.request_sync("workspace/workspaceFolders", {}, bufnr, 1000)))
+    else
+      print("Workspace folders not supported or client not found.")
+    end
   end, '[W]orkspace [L]ist Folders')
 
-
-  -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
+    vim.lsp.buf.format({ async = true })
   end, { desc = 'Format current buffer with LSP' })
 end
 
@@ -658,20 +689,29 @@ local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
+for server_name, server_config in pairs(servers) do
+  -- Use the modern API to merge your configuration (capabilities, on_attach, etc.)
+  -- with the defaults provided by nvim-lspconfig.
+  vim.lsp.config(server_name, {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = server_config.settings or {}, -- Use settings from your 'servers' table
+    filetypes = server_config.filetypes,     -- Use filetypes from your 'servers' table
+  })
+end
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end
-}
-local lspconfig = require('lspconfig')
-lspconfig.gleam.setup({})
-lspconfig.ocamllsp.setup {
+
+vim.lsp.config('gleam', {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  -- Add any other gleam specific settings here
+})
+
+
+-- LINE 703 (OCAMLLSP)
+-- OLD: lspconfig.ocamllsp.setup({...})
+-- NEW: Use the modern, non-deprecated vim.lsp.config() function
+vim.lsp.config('ocamllsp', {
   capabilities = capabilities,
   on_attach = on_attach,
   settings = {
@@ -679,8 +719,11 @@ lspconfig.ocamllsp.setup {
       enable = true,
     }
   },
+  -- The 'cmd' setting is necessary for Nix/Opam environments, keep it!
   cmd = { "opam", "exec", "--", "ocamllsp" }
-}
+})
+vim.lsp.enable("ocamllsp")
+
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",

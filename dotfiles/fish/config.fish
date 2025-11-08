@@ -24,7 +24,7 @@ function nix-edit-config
 end
 
 function nix-rebuild
-    darwin-rebuild switch --flake $HOME/.config/nix-darwin
+    sudo darwin-rebuild switch --flake $HOME/.config/nix-darwin
 end
 
 function is-nix-env
