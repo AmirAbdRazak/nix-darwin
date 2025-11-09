@@ -31,12 +31,21 @@
           xz
           wimlib
           tree
+          
+          nix-your-shell
+
+          h5utils
+          hdf5
+          cmake
 
           gnumake
           gnupatch
           direnv
           yt-dlp
           cargo
+          rustc
+          clippy
+          rustfmt
           lazygit
           git
           babelfish
@@ -54,7 +63,6 @@
           skimpdf
           iproute2mac
       ];
-
 
       fonts.packages = [
         pkgs.nerd-fonts.jetbrains-mono
@@ -78,7 +86,6 @@
             ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
           done
         '';
-
 
       nix = {
         settings.experimental-features = "nix-command flakes";

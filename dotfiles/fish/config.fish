@@ -13,6 +13,11 @@ function nix-gc
     nix-collect-garbage -d 
 end
 
+
+if command -q nix-your-shell
+  nix-your-shell fish | source
+end
+
 function fish-source
     source $HOME/.config/fish/config.fish
 end
@@ -45,8 +50,8 @@ end
 
 set -gx PATH /run/current-system/sw/bin $PATH
 set -g PATH /usr/local/bin $PATH
-bind -k "up" history-search-backward
-bind -k "down" history-search-forward
+bind up history-search-backward
+bind down history-search-forward
 
 alias n "nvim"
 alias vim "nvim"
